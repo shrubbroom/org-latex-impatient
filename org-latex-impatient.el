@@ -65,7 +65,10 @@
   "Width of preview border."
   :group 'org-latex-impatient
   :type '(integer))
-
+(defcustom org-latex-impatient-parse-headers-p -1
+  "Parse the org headers or not."
+  :group 'org-latex-impatient
+  :type '(integer))
 (defcustom org-latex-impatient-user-latex-definitions
   '("\\newcommand{\\ensuremath}[1]{#1}")
   "Custom LaTeX definitions used in preview."
@@ -292,9 +295,11 @@ for instant preview to work!")
        (not (org-latex-impatient--has-latex-overlay)))
       (let ((tex-string (org-latex-impatient--get-tex-string))
             (latex-header
-             (concat (s-join "\n" org-latex-impatient-user-latex-definitions)
-                     "\n"
-                     (org-latex-impatient--get-headers))))
+             (if (< org-latex-impatient-parse-headers-p 0)
+                 ""
+               (concat (s-join "\n" org-latex-impatient-user-latex-definitions)
+                       "\n"
+                       (org-latex-impatient--get-headers)))))
         (setq org-latex-impatient--current-window (selected-window))
         (setq org-latex-impatient--is-inline nil)
         ;; the tex string from latex-fragment includes math delimeters like
